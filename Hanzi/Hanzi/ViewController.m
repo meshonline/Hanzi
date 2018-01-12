@@ -22,6 +22,8 @@
 @property (strong, nonatomic) NSTimer *timer;
 @property (nonatomic) NSUInteger timer_status;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *demo_btn;
+@property (strong, nonatomic) IBOutlet UIToolbar *book_shell;
+@property (strong, nonatomic) IBOutlet UIToolbar *command_shell;
 
 - (void)speakWord:(NSString*)keyword;
 - (NSString *)pinyin:(NSString*)keyword;
@@ -139,9 +141,13 @@
 }
 
 - (void)viewDidLayoutSubviews {
-    CGSize size = [[self view] bounds].size;
-    CGFloat min_size = MIN(size.width, size.height) - 108.0f;
-    [_teach_view setFrame:CGRectMake((size.width - min_size) * 0.5f, 20.0f + (size.height - 20.0f - min_size) * 0.5f, min_size, min_size)];
+    CGRect content_box = self.view.readableContentGuide.layoutFrame;
+    CGFloat min_size = MIN(content_box.size.width, content_box.size.height);
+    BOOL horizon_mode = UIScreen.mainScreen.bounds.size.width > UIScreen.mainScreen.bounds.size.height;
+    if (horizon_mode) {
+        min_size -= _book_shell.bounds.size.height + _command_shell.bounds.size.height + 20.0f;
+    }
+    [_teach_view setFrame:CGRectMake((content_box.origin.x + (content_box.origin.x + content_box.size.width)) * 0.5f - min_size * 0.5f, (content_box.origin.y + (content_box.origin.y + content_box.size.height)) * 0.5f - min_size * 0.5f, min_size, min_size)];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -187,10 +193,10 @@
     if (btn_tag == 200) {
         if (_timer) {
             [self closeTimer];
-            [_demo_btn setTitle:@"自動書寫"];
+            [_demo_btn setTitle:@"演示筆順"];
         } else {
             [self openTimer];
-            [_demo_btn setTitle:@"手工書寫"];
+            [_demo_btn setTitle:@"停止演示"];
         }
         return;
     }

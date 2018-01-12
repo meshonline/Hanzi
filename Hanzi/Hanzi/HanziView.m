@@ -265,18 +265,30 @@
 }
 
 - (void)simulateTouchesBegan {
-    [self touchesBegan:nil withEvent:nil];
+    [self myTouchesBegan:nil withEvent:nil];
 }
 
 - (void)simulateTouchesMoved {
-    [self touchesMoved:nil withEvent:nil];
+    [self myTouchesMoved:nil withEvent:nil];
 }
 
 - (void)simulateTouchesEnded {
-    [self touchesEnded:nil withEvent:nil];
+    [self myTouchesEnded:nil withEvent:nil];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self myTouchesBegan:touches withEvent:event];
+}
+
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self myTouchesMoved:touches withEvent:event];
+}
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event {
+    [self myTouchesEnded:touches withEvent:event];
+}
+
+- (void)myTouchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     if (touches) {
         UITouch *touch = [touches anyObject];
         CGPoint touchPoint = [touch locationInView:self];
@@ -286,7 +298,7 @@
     _current_stroke_length = [self getStrokeLength:_current_stroke];
 }
 
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)myTouchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     CGFloat distance = [self getStrokeRatio] * 10.0f;
 
     if (touches) {
@@ -307,7 +319,7 @@
     [self setNeedsDisplay];
 }
 
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event {
+- (void)myTouchesEnded:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event {
     _current_stroke++;
     if (_current_stroke == [self getStrokeCount]) {
         _current_stroke = 0;
